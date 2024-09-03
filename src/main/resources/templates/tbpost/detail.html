@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js"></script>
+
+</head>
+<body>
+
+id :
+<input id="detail_tbpost_id" type="text" readonly/>
+title :
+<input id="detail_tbpost_title" type="text" />
+content :
+<input id="detail_tbpost_content" type="text" />
+author :
+<input id="detail_tbpost_author" type="text" />
+
+<!--<img id="detail_tbpost_content_img" alt="123"/>
+<a id="detail_tbpost_content_file" href="">다운로드</a>-->
+
+<button onclick="detail_tbpost()">detail</button>
+<button onclick="update_tbpost()">update</button>
+
+<script>
+    $( document ).ready(function() {
+        console.log( "ready!" );
+        detail_tbpost();
+    });
+</script>
+<script>
+    function getIdFromUrl(obj){
+        let temp_url_with_idx = obj;
+        if(obj == null){
+            temp_url_with_idx = window.location.href;
+            // => http://localhost:8080/tbpost/detail/963e1e8f040a43a88d5213598aaebc61
+        }
+        let split_slash_temp_idx = temp_url_with_idx.split('/');
+        let temp_idx = split_slash_temp_idx[split_slash_temp_idx.length - 1];
+        let split_question_temp_idx = temp_idx.split('?');
+        if(split_question_temp_idx.length > 0){
+            temp_idx = split_question_temp_idx[0];
+        }
+        return temp_idx;
+    }
+    function detail_tbpost(){
+        $.ajax({
+            url: "/api/tbpost",
+            type: "GET",
+            contentType : 'application/json; charset=utf-8',
+            data: {
+                id : getIdFromUrl(null)
+            },
+            cache: false,
+            success: (obj_data, status, xhr)=>{
+                let detailKeys = Object.keys(obj_data);
+                for (let eachKey of detailKeys){
+                    let tempType = $("#detail_tbpost_" + eachKey).attr("type");
+                    if(tempType === "checkbox"){
+                        $("#detail_tbpost_" + eachKey).prop("checked", obj_data[eachKey]);
+                    } else {
+                        $("#detail_tbpost_" + eachKey).val(obj_data[eachKey]);
+                    }
+                    $(".font_tbpost_" + eachKey).text(obj_data[eachKey]);
+                }
+            },
+            error: (data, status, xhr)=>{
+                alert("error!!");
+                alert(JSON.stringify(data));
+            }
+        });
+    }
+
+    function update_tbpost(){
+        $.ajax({
+            url: "/api/tbpost",
+            type: "PUT",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Content-type", "application/json");
+                xhr.setRequestHeader("Authorization", localStorage.getItem("accessToken"));
+            },
+            contentType : 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                id : $("#detail_tbpost_id").val()
+                ,title : $("#detail_tbpost_title").val()
+                ,content : $("#detail_tbpost_content").val()
+                ,author : $("#detail_tbpost_author").val()
+            }),
+            cache: false,
+            success: (data, status, xhr)=>{
+                //alert("success!!");
+                alert(JSON.stringify(data));
+            },
+            error: (data, status, xhr)=>{
+                alert("error!!");
+                alert(JSON.stringify(data));
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
