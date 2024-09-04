@@ -8,9 +8,9 @@ aws:
 
 spring:
   datasource:
-    url: jdbc:mysql://www.adapter-gwangalli.com:3306/scfallspradv?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://localhost:3306/fallspr
     username: root
-    password: ivill0080@
+    password:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 google:
