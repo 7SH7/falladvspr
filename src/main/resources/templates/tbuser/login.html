@@ -13,23 +13,30 @@ password :
 <input type="text" id="create_tbuser_password" />
 
 <button onclick="login()">login</button>
-<button onclick="generateAccessToken()">accessToken</button>
-<!--<div>
-refreshToken :
-<input type="text" id="detail_tbuser_refreshToken" />
-accessToken :
-<input type="text" id="detail_tbuser_accessToken" />
-</div>-->
 
-<!--<button onclick="generateAccessToken()">generateAccessToken</button>-->
-<!--<button onclick="accessTokenTest()">accessTokenTest</button>-->
 
+<div style="width: 200px;">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <div id="g_id_onload"
+         data-client_id=""
+         data-login_uri="/tbuser/login/google"
+         data-auto_prompt="false"
+         data-context="use">
+    </div>
+    <div class="g_id_signin"
+         data-type="standard"
+         data-size="large"
+         data-theme="outline"
+         data-text="sign_in_with"
+         data-shape="rectangular"
+         data-logo_alignment="left">
+    </div>
+</div>
 
 <script>
     function login(){
         $.ajax({
-            //url: "/api/tbuser/login",
-            url: "/api/login",
+            url: "/api/tbuser/login",
             type: "POST",
             contentType : 'application/json; charset=utf-8',
             data: JSON.stringify({
@@ -61,32 +68,7 @@ accessToken :
             }
         });
     }
-    function generateAccessToken(){
-        $.ajax({
-            url: "/api/auth/access-token",
-            type: "POST",
-            contentType: 'application/json; charset=utf-8',
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("Content-type", "application/json");
-                xhr.setRequestHeader("RefreshToken", localStorage.getItem("refreshToken"));
-            },
-            data: {},
-            cache: false,
-            success: (data, status, xhr) => {
-                alert("success!!");
 
-                let accessToken = xhr.getResponseHeader("Authorization");
-                alert(accessToken);
-
-                localStorage.setItem("accessToken", accessToken);
-                //alert(JSON.stringify(data));
-            },
-            error: (data, status, xhr) => {
-                alert("error!!");
-                alert(JSON.stringify(data));
-            }
-        });
-    }
 </script>
 
 </body>
