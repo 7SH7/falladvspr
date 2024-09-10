@@ -7,15 +7,12 @@ import com.thc.fallspradv.mapper.TbuserMapper;
 import com.thc.fallspradv.repository.*;
 import com.thc.fallspradv.service.TbuserService;
 import com.thc.fallspradv.util.AES256Cipher;
-import com.thc.fallspradv.util.NowDate;
-import com.thc.fallspradv.util.SendEmail;
+import com.thc.fallspradv.util.TokenFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -43,6 +40,14 @@ public class TbuserServiceImpl implements TbuserService {
             throw new RuntimeException("AES encrypt failed");
         }
         return newPw;
+    }
+
+    @Override
+    public TbuserDto.CreateResDto access(String refreshToken) throws Exception {
+        TokenFactory tokenFactory = new TokenFactory();
+        String tbuserId = tokenFactory.issueAccessToken(refreshToken);
+
+        return null;
     }
 
     @Override
@@ -155,8 +160,10 @@ public class TbuserServiceImpl implements TbuserService {
 
         //로그인에 성공했을 경우!
         // 리프레쉬 토큰을 만들어서 리턴해준다!
+        TokenFactory tokenFactory = new TokenFactory();
+        String refreshToken = tokenFactory.issueRefreshToken(tbuser.getId());
 
-        return TbuserDto.CreateResDto.builder().id("login").build();
+        return TbuserDto.CreateResDto.builder().id(refreshToken).build();
     }
 
     @Override
