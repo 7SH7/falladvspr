@@ -45,9 +45,9 @@ public class TbuserServiceImpl implements TbuserService {
     @Override
     public TbuserDto.CreateResDto access(String refreshToken) throws Exception {
         TokenFactory tokenFactory = new TokenFactory();
-        String tbuserId = tokenFactory.issueAccessToken(refreshToken);
-
-        return null;
+        String accessToken = tokenFactory.issueAccessToken(refreshToken);
+        System.out.println("accessToken : " + accessToken);
+        return TbuserDto.CreateResDto.builder().id(accessToken).build();
     }
 
     @Override

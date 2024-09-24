@@ -1,48 +1,6 @@
 package com.thc.fallspradv.interceptor;
-//
-//import jakarta.servlet.http.HttpServletRequest;
-//import jakarta.servlet.http.HttpServletResponse;
-//import org.springframework.web.servlet.HandlerInterceptor;
-//import org.springframework.web.servlet.ModelAndView;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//
-//public class DefaultInterceptor implements HandlerInterceptor {
-//
-//	// 인터셉터는 컨트롤러가 실행되기 전, 후에 실행되는 코드
-//	private final Logger logger = Logger.getLogger(this.getClass());
-//
-//	// 컨트롤러 실행 전에 실행되는 코드
-//	@Override
-//	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-//		logger.info("preHandle / request [{}]", request);
-//
-//		request.setAttribute("reqTest", "done");
-//		response.setHeader("resTest", "done1");
-//
-//		logger.info("preHandle / reqTest [{}]", request.getAttribute("reqTest"));
-//		logger.info("preHandle / resTest [{}]", response.getHeader("resTest"));
-//
-//		String requestURI = request.getRequestURI();
-//		String requestMethod = request.getMethod();
-//		return true;
-//	}
-//
-//	// 컨트롤러 실행 후에 실행되는 코드
-//	// 컨트롤러 실행 후에 실행되는 코드는 컨트롤러에서 예외가 발생하면 실행되지 않음
-//	@Override
-//	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-//		logger.info("postHandle / request [{}]", request);
-//	}
-//
-//	// 모든 것을 마친 후, 실행되는 코드
-//	@Override
-//	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-//		logger.info("afterCompletion / request [{}]", request);
-//	}
-//}
-//
 
+import com.thc.fallspradv.util.TokenFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -58,10 +16,21 @@ public class DefaultInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		logger.info("preHandle / request [{}]", request);
+		/*
 		request.setAttribute("reqTest", "done");
 		response.setHeader("resTest", "done1");
 		logger.info("preHandle / reqTest [{}]", request.getAttribute("reqTest"));
 		logger.info("preHandle / resTest [{}]", response.getHeader("resTest"));
+		 */
+
+		//logger.info("preHandle / refreshToken [{}]", request.getHeader("refreshToken"));
+		logger.info("preHandle / accessToken [{}]", request.getHeader("accessToken"));
+		if(request.getHeader("accessToken") != null){
+			TokenFactory tokenFactory = new TokenFactory();
+			String reqTbuserId =  tokenFactory.verifyToken(request.getHeader("accessToken"));
+			request.setAttribute("reqTbuserId", reqTbuserId);
+		}
+		//logger.info("preHandle / refreshToken [{}]", response.getHeader("refreshToken"));
 
 		String requestURI = request.getRequestURI();
 		String requestMethod = request.getMethod();

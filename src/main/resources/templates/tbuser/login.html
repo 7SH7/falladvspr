@@ -54,13 +54,18 @@ refreshToken :
                 } else {
                     alert(JSON.stringify(obj_data));
 
-                    let refreshToken = xhr.getResponseHeader("RefreshToken");
-                    let accessToken = xhr.getResponseHeader("Authorization");
-                    alert(refreshToken);
-                    alert(accessToken);
+                    $("#create_tbuser_refreshToken").val(obj_data["id"]);
 
-                    localStorage.setItem("refreshToken", refreshToken);
-                    localStorage.setItem("accessToken", accessToken);
+
+                    // localStorage.setItem("refreshToken", obj_data["id"]);
+                    //
+                    // let refreshToken = xhr.getResponseHeader("RefreshToken");
+                    // let accessToken = xhr.getResponseHeader("Authorization");
+                    // alert(refreshToken);
+                    // alert(accessToken);
+
+                    // localStorage.setItem("refreshToken", refreshToken);
+                    // localStorage.setItem("accessToken", accessToken);
                     //generateAccessToken(obj_data["id"]);
                     //location.replace("/index");
                 }
@@ -73,6 +78,31 @@ refreshToken :
         });
     }
 
+    // 이제 controller의 access에서 이걸 불러서, 서비스딴으로 넘겨주고, 거기서 작업처리.
+    // 그러면 이제 id를 읽어올 수 있는데(refreshToken),
+    // 시큐리티에서는 principal에서 다 제공해주는 기능
+    function access(){
+        $.ajax({
+            url: "/api/tbuser/access",
+            type: "POST",
+            contentType : 'application/json; charset=utf-8',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Content-type", "application/json");
+                xhr.setRequestHeader("RefreshToken", localStorage.getItem("refreshToken"));
+            },
+            data: {},
+            cache: false,
+            success: (obj_data, status, xhr)=>{
+                alert(JSON.stringify(obj_data));
+            },
+            error: (obj_data, status, xhr)=>{
+                alert("error!!");
+                // alert(JSON.stringify(obj_data));
+                let accessToken = obj_data["id"];
+                localStorage.setItem("accessToken", accessToken);
+            }
+        });
+    }
 </script>
 
 </body>
